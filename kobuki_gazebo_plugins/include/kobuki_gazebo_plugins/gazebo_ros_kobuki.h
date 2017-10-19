@@ -106,6 +106,7 @@ private:
   bool prepareBumper();
   bool prepareIMU();
   void setupRosApi(std::string& model_name);
+  bool prepareFrames();
 
   // internal functions for update
   void updateJointState();
@@ -235,7 +236,10 @@ private:
   sensor_msgs::Imu imu_msg_;
   /// ROS subscriber for reseting the odometry data
   ros::Subscriber odom_reset_sub_;
-
+  /// Frame names parametrized
+  std::string base_link_frame_;
+  std::string base_footprint_frame_;
+  std::string odom_frame_;
 
 
 };

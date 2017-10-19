@@ -44,7 +44,7 @@ void GazeboRosKobuki::updateJointState()
   /*
    * Joint states
    */
-  std::string baselink_frame = gazebo_ros_->resolveTF("base_link");
+  std::string baselink_frame = gazebo_ros_->resolveTF(base_link_frame_);
   joint_state_.header.stamp = ros::Time::now();
   joint_state_.header.frame_id = baselink_frame;
   joint_state_.position[LEFT] = joints_[LEFT]->GetAngle(0).Radian();
@@ -59,8 +59,8 @@ void GazeboRosKobuki::updateJointState()
  */
 void GazeboRosKobuki::updateOdometry(common::Time& step_time)
 {
-  std::string odom_frame = gazebo_ros_->resolveTF("odom");
-  std::string base_frame = gazebo_ros_->resolveTF("base_footprint");
+  std::string odom_frame = gazebo_ros_->resolveTF(odom_frame_);
+  std::string base_frame = gazebo_ros_->resolveTF(base_footprint_frame_);
   odom_.header.stamp = joint_state_.header.stamp;
   odom_.header.frame_id = odom_frame;
   odom_.child_frame_id = base_frame;

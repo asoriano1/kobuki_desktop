@@ -59,7 +59,12 @@ void GazeboRosKobuki::Load(physics::ModelPtr parent, sdf::ElementPtr sdf)
   world_ = parent->GetWorld();
 
   prepareMotorPower();
+  
+  if(prepareFrames() == false)
+    return;
+    
   preparePublishTf();
+   
 
   if(prepareJointState() == false)
     return;

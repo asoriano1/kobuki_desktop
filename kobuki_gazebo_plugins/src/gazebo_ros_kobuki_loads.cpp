@@ -91,6 +91,48 @@ bool GazeboRosKobuki::prepareJointState()
 }
 
 /*
+ * Prepare link frames to publish
+ */
+bool GazeboRosKobuki::prepareFrames()
+{
+	if (sdf_->HasElement("base_link_frame"))
+	{	
+		base_link_frame_=sdf_->GetElement("base_link_frame")->Get<std::string>();
+		ROS_INFO("<base_link_frame>=%s", base_link_frame_.c_str());
+	}
+	else
+	{
+		ROS_ERROR_STREAM("Couldn't find the name of <base_link_frame> parameter!"
+                     << " Did you specify it?" << " [" << node_name_ <<"]");
+        return false;
+	}
+	if (sdf_->HasElement("base_footprint_frame"))
+	{	
+		base_footprint_frame_=sdf_->GetElement("base_footprint_frame")->Get<std::string>();
+		ROS_INFO("<base_footprint_frame>=%s", base_footprint_frame_.c_str());
+	}
+	else
+	{
+		ROS_ERROR_STREAM("Couldn't find the name of <base_footprint_frame> parameter!"
+                     << " Did you specify it?" << " [" << node_name_ <<"]");
+        return false;
+	}
+	if (sdf_->HasElement("odom_frame"))
+	{	
+		odom_frame_=sdf_->GetElement("odom_frame")->Get<std::string>();
+		ROS_INFO("<odom_frame>=%s", odom_frame_.c_str());
+	}
+	else
+	{
+		ROS_ERROR_STREAM("Couldn't find the name of <odom_frame> parameter!"
+                     << " Did you specify it?" << " [" << node_name_ <<"]");
+        return false;
+	}
+	
+	return true;
+}
+
+/*
  * Prepare publishing odometry data
  */
 void GazeboRosKobuki::preparePublishTf()
@@ -295,10 +337,10 @@ bool GazeboRosKobuki::prepareIMU()
     return false;
   }
   imu_ = std::dynamic_pointer_cast<sensors::ImuSensor>(
-            sensors::get_sensor(world_->GetName()+"::"+node_name_+"::base_footprint::"+imu_name));
+            sensors::get_sensor(world_->GetName()+"::"+node_name_+"::"+base_footprint_frame_+"::"+imu_name));           
   if (!imu_)
   {
-    ROS_ERROR_STREAM("Couldn't find the IMU in the model! [" << node_name_ <<"]");
+    ROS_ERROR_STREAM("Couldn't find the IMU in the model! [" << node_name_ <<"] " << world_->GetName()+"::"+node_name_+"::base_footprint::"+imu_name);
     return false;
   }
   imu_->SetActive(true);
